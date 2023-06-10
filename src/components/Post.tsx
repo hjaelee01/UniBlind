@@ -17,14 +17,16 @@ import { PostType } from '../types/PostType';
 import { downvote, upvote } from '../redux/feedSlice';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import { auth } from '../firebase';
 
 export function Post({postId, title, text, voteCount}: PostType) {
   const dispatch = useDispatch();
+  const user = auth.currentUser;
   const handleUpvote = () => {
-    dispatch(upvote({postId: postId}))
+    user ? dispatch(upvote({postId: postId})) : alert('Sign in to upvote!');
   }
   const handleDownvote = () => {
-    dispatch(downvote({postId: postId}))
+    user ? dispatch(downvote({postId: postId})) : alert('Sign in to downvote!');
   }
 
   return (
