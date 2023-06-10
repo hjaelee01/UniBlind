@@ -29,7 +29,7 @@ export function Header() {
     }
     return (
         <div className="topBar" style={topBarStyle}>
-            <Text style={textStyle} onClick={handleHome}>uniBlind</Text>
+            <Text style={textStyle} onClick={handleHome}>Un(i)Veil</Text>
             <div style={{ width: '30px' }}></div>
             <Input placeholder='Search' style={searchbarStyle}/>
             <div style={{ width: '30px' }}></div>
