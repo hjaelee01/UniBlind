@@ -8,11 +8,11 @@ import { useSelector } from 'react-redux';
 import { login, logout } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
 import { UserType } from '../types/UserType';
+import { auth } from '../firebase';
 
 export function Home() {
-  const displayName = useSelector((state: UserType) => state.displayName);
   const dispatch = useDispatch();
-  const auth = getAuth();
+  const user = auth.currentUser;
 
   // Check if user is signed in when app loads
   useEffect(() => {
@@ -41,7 +41,7 @@ export function Home() {
         fontWeight='bold'
       >
         <GridItem pl='2' area={'header'}>
-          <Header displayName={displayName}/>
+          <Header />
         </GridItem>
         <GridItem pl='2' bg="gray.100" area={'nav'} px={4} py={4}>
           <Navigation />

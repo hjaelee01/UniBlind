@@ -32,6 +32,9 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
         .then(() => {
             onAuthStateChanged(auth, (user) => {
                 if (user) {
+                    updateProfile(auth.currentUser, {
+                      displayName: displayName,
+                    });
                     sendEmailVerification(auth.currentUser);
                     alert("Verification email sent. Check your mailbox!")
                 } else {
@@ -45,9 +48,9 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
                 auth.currentUser.reload().then(() => {
                     const user = auth.currentUser;
                     if (user.emailVerified) {
-                      updateProfile(user, {
-                        displayName: displayName,
-                      });
+                      // updateProfile(user, {
+                        // displayName: displayName,
+                      // });
                       dispatch(login([displayName, user.uid]));
                       resolve(user);
                       alert('Email verification succeeded.');

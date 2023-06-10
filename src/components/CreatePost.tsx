@@ -6,6 +6,7 @@ import { postSubmit } from '../redux/feedSlice';
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from '@reduxjs/toolkit';
 import React from 'react';
+import { auth } from '../firebase';
 
 
 export function CreatePost() {

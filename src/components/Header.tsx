@@ -1,11 +1,10 @@
 import { Input, Button, Text } from '@chakra-ui/react'
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-type HeaderProps = {
-    displayName? : string;
-};
+import { auth } from '../firebase';
+import { useSelector } from 'react-redux';
 
-export function Header({ displayName }: HeaderProps) {
+export function Header() {
     const topBarStyle = {
         padding: '20px',
         display: 'flex',
@@ -21,6 +20,7 @@ export function Header({ displayName }: HeaderProps) {
         fontSize: "40px"
       };
     const navigate = useNavigate();
+    const user = auth.currentUser;
     const handleLogin = () => {
       navigate('/login');
     };
@@ -33,12 +33,12 @@ export function Header({ displayName }: HeaderProps) {
             <div style={{ width: '30px' }}></div>
             <Input placeholder='Search' style={searchbarStyle}/>
             <div style={{ width: '30px' }}></div>
-            {displayName == null ?
+            {!user ?
             <Button colorScheme='teal' variant='outline' onClick={handleLogin}>
                 Login
             </Button> : 
             <Button colorScheme='teal' variant='outline' onClick={() => alert('sdklfjwlkjkl')}>
-                {displayName}
+                {user.displayName}
             </Button>}
         </div>
     )

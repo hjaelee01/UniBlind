@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FeedType } from "../types/FeedType";
 import React from "react";
+import { auth } from "../firebase";
 
 export function PostExpanded() {
   const { postId } = useParams<{ postId: string }>();
