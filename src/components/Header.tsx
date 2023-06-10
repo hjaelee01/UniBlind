@@ -1,5 +1,8 @@
 import { Input, Button, Text } from '@chakra-ui/react'
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
+import { useSelector } from 'react-redux';
 
 export function Header() {
     const topBarStyle = {
@@ -17,6 +20,7 @@ export function Header() {
         fontSize: "40px"
       };
     const navigate = useNavigate();
+    const user = auth.currentUser;
     const handleLogin = () => {
       navigate('/login');
     };
@@ -29,9 +33,13 @@ export function Header() {
             <div style={{ width: '30px' }}></div>
             <Input placeholder='Search' style={searchbarStyle}/>
             <div style={{ width: '30px' }}></div>
+            {!user ?
             <Button colorScheme='teal' variant='outline' onClick={handleLogin}>
                 Login
-            </Button>
+            </Button> : 
+            <Button colorScheme='teal' variant='outline' onClick={() => alert('sdklfjwlkjkl')}>
+                {user.displayName}
+            </Button>}
         </div>
     )
 }

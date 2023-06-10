@@ -2,9 +2,11 @@ import { Stack, Input, Textarea, Box, Flex, FormControl, Grid, GridItem, Select,
 import { Header } from './Header';
 import { ChangeEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { postSubmit } from '../features/feedSlice';
+import { postSubmit } from '../redux/feedSlice';
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from '@reduxjs/toolkit';
+import React from 'react';
+import { auth } from '../firebase';
 
 
 export function CreatePost() {

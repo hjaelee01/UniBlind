@@ -1,4 +1,5 @@
 import { Text } from '@chakra-ui/react'
+import React from 'react';
 import { CSSProperties } from 'react';
 
 export function NavButton(props: { name: string }) {

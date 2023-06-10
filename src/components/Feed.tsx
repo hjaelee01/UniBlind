@@ -2,9 +2,11 @@ import { useSelector } from "react-redux"
 import { PostType } from "../types/PostType"
 import { Post } from "./Post"
 import { Grid, GridItem } from "@chakra-ui/react"
+import { FeedType } from "../types/FeedType"
+import React from "react"
 
 export function Feed() {
-    const feed = useSelector((state: {feed: PostType[]}) => state.feed)
+    const feed = useSelector((state: FeedType) => state.feed)
 
     return (
         <div>

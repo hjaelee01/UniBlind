@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Flex,
   Heading,
@@ -15,6 +14,18 @@ import {
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock, FaKey, FaGhost } from "react-icons/fa";
 
+import { useState } from "react";
+import firebase from 'firebase/app';
+import { auth } from "../firebase";
+import {
+  createUserWithEmailAndPassword, 
+  sendEmailVerification,
+  updateProfile,
+} from 'firebase/auth';
+import { signUp } from "../redux/userSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 const CFaKey = chakra(FaKey);
@@ -27,42 +38,23 @@ export function SignUp() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const isFilled = (email !== '') && (username !== '') && (password !== '');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSendCode = () => {
-    try {
-      if (!email.endsWith("@ed.ac.uk")) {
-        setError('Please enter a valid school email address.');
-        alert('Please enter a valid school email address.')
-      } else {
-        setIsCodeSent(true)
-      }
-    } catch (error) {
-      setError(error.message);
+  const handleJoinClick = () => {
+    console.log('aaaaaaaaaa')
+    if (!email.endsWith("@ed.ac.uk")) {
+      setError('Please enter a valid school email address.');
+      alert('Please enter a valid school email address.')
+    } else {
+      // Given email is school email address
+      setIsCodeSent(true)
+      dispatch(signUp(email, username, password, navigate));
     }
-    // TODO: Send verification code to the email address.
     //TODO: After clicking the button, set 3 min timer.
   }
   const handleShowClick = () => setShowPassword(!showPassword);
-  const handleCheckCode = () => {
-    /* TODO:
-      if (generatedCode === user input code) {
-        renders
-        <InputRightElement>
-          "Code matches" in green colour
-        </InputRightElement>
-      } else {
-        renders
-        <InputRightElement>
-          "Wrong code" in red colour
-        </InputRightElement>
-      }
-    */
-  }
-  const handleSignUp = async() => {
-    // TODO: dispatch login action to the userSlice.
-    // TODO: add user info to firebase database
-  }
-
 
   return (
     <Flex
@@ -99,46 +91,8 @@ export function SignUp() {
                   type="email" 
                   onChange={(e) => setEmail(e.target.value)} 
                   placeholder="Your school email address" />
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    onClick={handleSendCode}
-                    textAlign="center"
-                    ml={2}
-                    alignSelf="center"
-                  >
-                      {isCodeSent ? "Send again" : "Send code"}
-                  </Button>
                 </InputGroup>
               </FormControl>
-
-              {/* 'Check if code matches' area */}
-              {isCodeSent
-              ?
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<CFaKey color="gray.300" />}
-                  />
-                  <Input 
-                  type="email" 
-                  onChange={(e) => setEmail(e.target.value)} 
-                  placeholder="Enter the code sent to your email" />
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    onClick={handleCheckCode}
-                    textAlign="center"
-                    ml={2}
-                    alignSelf="center"
-                  >
-                      Check
-                  </Button>
-                </InputGroup>
-              </FormControl>
-              :
-              null}
 
               {/* Username input area */}
               <FormControl>
@@ -154,6 +108,7 @@ export function SignUp() {
                     placeholder="Username"
                   />
                   {/* 
+                  TODO:
                     (check if existing username)
                     ?  <InputRightElement>
                          "Username not available" in red colour
@@ -189,13 +144,15 @@ export function SignUp() {
                 <FormHelperText textAlign="right">
                 </FormHelperText>
               </FormControl>
+
+              {/* Join button */}
               <Button
                 borderRadius={0}
-                type="submit"
                 variant="solid"
                 colorScheme="teal"
                 width="full"
-                onClick={handleSignUp}
+                isDisabled={isFilled ? false : true}
+                onClick={handleJoinClick}
               >
                 Join
               </Button>

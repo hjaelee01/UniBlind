@@ -3,6 +3,7 @@ import { EditIcon } from '@chakra-ui/icons'
 import { CSSProperties } from 'react';
 import { NavButton } from './NavButton';
 import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
 
 export function Navigation() {
     const containerStyle: CSSProperties = {

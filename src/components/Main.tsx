@@ -1,4 +1,5 @@
 import { Feed } from './Feed';
+import React from 'react';
 
 export function Main() {
     const tabStyle = {
