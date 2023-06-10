@@ -24,6 +24,7 @@ import {
 } from 'firebase/auth';
 import { signUp } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -39,6 +40,7 @@ export function SignUp() {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const isFilled = (email !== '') && (username !== '') && (password !== '');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleJoinClick = () => {
     console.log('aaaaaaaaaa')
@@ -48,7 +50,7 @@ export function SignUp() {
     } else {
       // Given email is school email address
       setIsCodeSent(true)
-      dispatch(signUp(email, username, password));
+      dispatch(signUp(email, username, password, navigate));
     }
     //TODO: After clicking the button, set 3 min timer.
   }

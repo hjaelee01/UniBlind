@@ -26,8 +26,7 @@ export const userSlice = createSlice({
 
 export const { login, logout } = userSlice.actions;
 
-export const signUp = (email, displayName, password) => async (dispatch) => {
-    const navigate = useNavigate();
+export const signUp = (email, displayName, password, navigate) => async (dispatch) => {
     try {
         createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
@@ -35,7 +34,6 @@ export const signUp = (email, displayName, password) => async (dispatch) => {
                 if (user) {
                     sendEmailVerification(auth.currentUser);
                     alert("Verification email sent. Check your mailbox!")
-                    navigate('/')
                 } else {
                     alert("User doesn't exist")
                 }
@@ -53,6 +51,7 @@ export const signUp = (email, displayName, password) => async (dispatch) => {
                       dispatch(login([displayName, user.uid]));
                       resolve(user);
                       alert('Email verification succeeded.');
+                      navigate('/');
                     } else {
                       alert('Email verification failed.');
                       reject(new Error("Email verification failed."));
