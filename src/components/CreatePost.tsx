@@ -5,13 +5,14 @@ import { useDispatch } from 'react-redux';
 import { postSubmit } from '../redux/feedSlice';
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from '@reduxjs/toolkit';
-import React from 'react';
-import { auth } from '../firebase';
+import { doc, setDoc } from "firebase/firestore"; 
+import { db } from '../firebase';
 
 
 export function CreatePost() {
   const [title, setTitle] = useState('')
   const [text, setText] = useState('')
+  const postId = nanoid();
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value)
   }
@@ -24,7 +25,7 @@ export function CreatePost() {
       // If the user clicks the button, it dispatches an action with the payload of the form {title, text}
       dispatch(
         postSubmit(
-          ({postId: nanoid(),
+          ({postId: postId,
             title,
               text,
               voteCount: 0
@@ -33,7 +34,13 @@ export function CreatePost() {
       )
       setTitle('');
       setText('');
-      // also, it navigates to Main component.
+      // TODO: it dispatches post content to Firestore
+      setDoc(doc(db, "posts", postId), {
+        title: title,
+        text: text,
+        voteCount: 0
+      });
+      // then navigates to Main component.
       navigate('/')
     }
   }

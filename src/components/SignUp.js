@@ -52,7 +52,6 @@ export function SignUp() {
       setIsCodeSent(true)
       dispatch(signUp(email, username, password, navigate));
     }
-    //TODO: After clicking the button, set 3 min timer.
   }
   const handleShowClick = () => setShowPassword(!showPassword);
 

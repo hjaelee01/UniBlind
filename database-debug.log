@@ -2,3 +2,8 @@
 15:42:11.694 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
 15:42:16.673 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - unihood-20eb2-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 93ms, init: 0ms
 15:42:16.713 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace unihood-20eb2-default-rtdb status Active to Active
+16:19:06.521 [FirebaseWorkerPool-1-4] WARN com.firebase.core.persistence.backend.dummy.EmulatorMetadataPersistence - Multiple projectIds are not recommended in single project mode. Requested 
+namespace unihood-20eb2, but the emulator is configured for unihood-20eb2-default-rtdb. To 
+opt-out of single project mode add/set the singleProjectMode: false property in 
+the firebase.json emulators config. 
+16:19:06.531 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.NamespaceActor - unihood-20eb2 successfully activated FBKV (SurveyIdle(0)) wait: 4ms, init: 0ms

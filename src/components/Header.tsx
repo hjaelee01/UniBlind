@@ -21,8 +21,12 @@ export function Header() {
       };
     const navigate = useNavigate();
     const user = auth.currentUser;
-    const handleLogin = () => {
+    const handleLoginClick = () => {
       navigate('/login');
+    };
+    const handleDisplayNameClick = () => {
+        // TODO: add a dropdown menu for user to (view profile / logout / change password)
+        alert('sdklfjwlkjkl')
     };
     const handleHome = () => {
         navigate('/')
@@ -34,10 +38,10 @@ export function Header() {
             <Input placeholder='Search' style={searchbarStyle}/>
             <div style={{ width: '30px' }}></div>
             {!user ?
-            <Button colorScheme='teal' variant='outline' onClick={handleLogin}>
+            <Button colorScheme='teal' variant='outline' onClick={handleLoginClick}>
                 Login
             </Button> : 
-            <Button colorScheme='teal' variant='outline' onClick={() => alert('sdklfjwlkjkl')}>
+            <Button colorScheme='teal' variant='outline' onClick={handleDisplayNameClick}>
                 {user.displayName}
             </Button>}
         </div>

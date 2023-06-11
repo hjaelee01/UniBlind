@@ -28,6 +28,7 @@ export function Home() {
         logout();
       }
     });
+    // TODO: If it's logged in, it remains the auth state even when refreshed.
   }, []);
 
   return (

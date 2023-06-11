@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { firebase, initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from "firebase/analytics";
 import { 
 getAuth, 
@@ -27,12 +28,15 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
 //const analytics = getAnalytics(app);
 const auth = getAuth(app);
 connectAuthEmulator(auth, "http://localhost:9099");
 
 export {
   auth,
+  db,
   createUserWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
@@ -40,4 +44,4 @@ export {
   signOut
 }
 
-export default app
+export default app;
