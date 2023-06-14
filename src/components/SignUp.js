@@ -15,7 +15,9 @@ import {
 import { FaUserAlt, FaLock, FaKey, FaGhost } from "react-icons/fa";
 
 import { useState } from "react";
-import firebase from 'firebase/app';
+import firebase from "firebase/compat/app";
+// Required for side-effects
+import "firebase/firestore";
 import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword, 

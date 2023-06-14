@@ -9,7 +9,9 @@ import feedReducer from './redux/feedSlice';
 import userReducer from './redux/userSlice';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
-import firebase from './firebase';
+import firebase from "firebase/compat/app";
+// Required for side-effects
+import "firebase/firestore";
 
 const rrfConfig = {
   userProfile: 'users', // Firestore collection where user profiles are stored

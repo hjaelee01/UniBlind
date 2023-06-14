@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { nanoid } from '@reduxjs/toolkit';
 import { doc, setDoc } from "firebase/firestore"; 
 import { db } from '../firebase';
+import { PostType } from '../types/PostType';
 
 
 export function CreatePost() {
@@ -20,30 +21,29 @@ export function CreatePost() {
     setText(event.target.value)
   }
   const navigate = useNavigate();
-  const handlePostClick = () => {
-    if (title) {
-      // If the user clicks the button, it dispatches an action with the payload of the form {title, text}
-      dispatch(
-        postSubmit(
-          ({postId: postId,
-            title,
-              text,
-              voteCount: 0
-            })
-        )
-      )
-      setTitle('');
-      setText('');
-      // TODO: it dispatches post content to Firestore
-      setDoc(doc(db, "posts", postId), {
+  const handlePostClick = async () => {
+    // Check if the title is empty
+      const postData: PostType = {
+        postId: postId,
         title: title,
         text: text,
         voteCount: 0
-      });
-      // then navigates to Main component.
-      navigate('/')
-    }
-  }
+      };
+      try {
+        // Dispatch an action to submit the post data
+        dispatch(postSubmit(postData));
+        // Save the post data to Firestore
+        await setDoc(doc(db, "posts", postId), postData);
+        // Reset the form fields
+        setTitle('');
+        setText('');
+      
+        // Navigate to the desired component
+        navigate('/');
+      } catch (error) {
+        console.error('Error saving post to Firestore:', error);
+      }
+  };
   const dispatch = useDispatch();
   const isTitleEmpty = title.trim() === ''
 
