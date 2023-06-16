@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { postSubmit } from '../redux/feedSlice';
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from '@reduxjs/toolkit';
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { PostType } from '../types/PostType';
 

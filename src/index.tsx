@@ -7,16 +7,10 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import feedReducer from './redux/feedSlice';
 import userReducer from './redux/userSlice';
-import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
 import firebase from "firebase/compat/app";
 // Required for side-effects
 import "firebase/firestore";
-
-const rrfConfig = {
-  userProfile: 'users', // Firestore collection where user profiles are stored
-  useFirestoreForProfile: true, // Enable Firestore for profile storage
-};
 
 const store = configureStore({
   reducer: {
@@ -25,22 +19,13 @@ const store = configureStore({
   }
 });
 
-const rrfProps = {
-  firebase,
-  config: rrfConfig,
-  dispatch: store.dispatch,
-  createFirestoreInstance,
-};
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-        <App />
-      </ReactReduxFirebaseProvider>
+      <App />
     </Provider>
   </React.StrictMode>
 );

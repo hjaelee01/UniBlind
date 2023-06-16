@@ -2,9 +2,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from "firebase/analytics";
-import firebase from "firebase/compat/app";
-// Required for side-effects
-import "firebase/firestore";
 import { 
 getAuth, 
 createUserWithEmailAndPassword, 
