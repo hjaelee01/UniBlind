@@ -19,7 +19,7 @@ connectAuthEmulator,
 const firebaseConfig = {
   apiKey: String(process.env.REACT_APP_FIREBASE_API_KEY),
   authDomain: String(process.env.REACT_APP_FIREBASE_AUTH_DOMAIN),
-  projectId: String(process.env.REACT_APP_FIREBASE_PROJECT_ID),
+  projectId: 'unihood-20eb2',
   storageBucket: String(process.env.REACT_APP_FIREBASE_STORAGE_BUCKET),
   messagingSenderId: String(process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID),
   appId: String(process.env.REACT_APP_FIREBASE_APP_ID),
@@ -33,7 +33,7 @@ const db = getFirestore(app);
 //const analytics = getAnalytics(app);
 const auth = getAuth(app);
 connectAuthEmulator(auth, "http://localhost:9099");
-connectFirestoreEmulator(db,'0.0.0.0', '8080')
+connectFirestoreEmulator(db,'0.0.0.0', 8080)
 export {
   auth,
   db,

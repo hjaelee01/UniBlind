@@ -11,15 +11,21 @@
     },
     "singleProjectMode": true,
     "firestore": {
-			"host": "0.0.0.0",
+      "host": "0.0.0.0",
       "port": 8080
     },
     "database": {
       "port": 9000
+    },
+    "functions": {
+      "port": 5001
     }
   },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "functions": {
+    "source": "functions"
   }
 }
