@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import { auth } from '../firebase';
 
-export function Post({postId, title, text, voteCount}: PostType) {
+export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
   const handleUpvote = () => {
@@ -36,6 +36,7 @@ export function Post({postId, title, text, voteCount}: PostType) {
             <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
               <Box>
                 <Heading size='lg'>{title}</Heading>
+                <Text fontSize='sm'>{originalPoster}</Text>
               </Box>
             </Flex>
             <IconButton

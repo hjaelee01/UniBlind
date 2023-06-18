@@ -3,12 +3,8 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore,connectFirestoreEmulator } from 'firebase/firestore';
 import { getAnalytics } from "firebase/analytics";
 import { 
-getAuth, 
-createUserWithEmailAndPassword, 
-updateProfile, 
+getAuth,
 onAuthStateChanged, 
-signInWithEmailAndPassword, 
-signOut,
 connectAuthEmulator,
 } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
@@ -37,11 +33,7 @@ connectFirestoreEmulator(db,'0.0.0.0', 8080)
 export {
   auth,
   db,
-  createUserWithEmailAndPassword,
-  updateProfile,
   onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut
 }
 
 export default app;

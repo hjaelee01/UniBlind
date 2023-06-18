@@ -16,7 +16,7 @@ export function PostExpanded() {
 
   // Render the page only if targetPost exists
   if (!targetPost) {
-    return <div>Loading...</div>;
+    return <div>This post doesn't exist.</div>;
   }
   return (
     <Grid
@@ -37,6 +37,7 @@ export function PostExpanded() {
       <GridItem pl='2' bg="gray.100" area={'main'}>
         <Container padding='4' bg='white' border='2px solid' mt='24'>
           <Heading>{targetPost.title}</Heading>
+          <Text>Posted by {targetPost.originalPoster}</Text>
           <p>{targetPost.text}</p>
         </Container>
       </GridItem>

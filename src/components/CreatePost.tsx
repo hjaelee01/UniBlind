@@ -6,7 +6,7 @@ import { postSubmit } from '../redux/feedSlice';
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from '@reduxjs/toolkit';
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { auth, db } from '../firebase';
 import { PostType } from '../types/PostType';
 
 
@@ -23,7 +23,9 @@ export function CreatePost() {
   const navigate = useNavigate();
   const handlePostClick = async () => {
     // Check if the title is empty
+      const user = auth.currentUser;
       const postData: PostType = {
+        originalPoster: user?.displayName || 'Anonymous',
         postId: postId,
         title: title,
         text: text,

@@ -14,6 +14,7 @@ export function Feed() {
               {feed.map((x) => (
                 <GridItem key={x.postId}>
                   <Post
+                    originalPoster={x.originalPoster}
                     postId={x.postId}
                     title={x.title}
                     text={x.text.length > 100 ? x.text.substring(0, 100) + "..." : x.text}
