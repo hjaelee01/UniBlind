@@ -45,38 +45,48 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
   }
 
   return (
-      <Card maxW='md' marginBottom={'20px'} width={'40vw'}>
-        <CardHeader>
-          <Flex gap='4'>
-            <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-              <Box>
-                <Heading size='lg'>{title}</Heading>
-                <Text fontSize='sm'>{originalPoster}</Text>
-              </Box>
-            </Flex>
-            <IconButton
-              variant='ghost'
-              colorScheme='gray'
-              aria-label='See menu'
-              icon={<BsThreeDotsVertical />}
-            />
+    <Card maxW='md' marginBottom={'20px'} width={'40vw'}>
+      <Flex gap='4' flexDirection='row'>
+        <Box flexBasis='20%' pr={1}>
+          <Flex flexDirection='column' alignItems='center'>
+            <Button variant='ghost' leftIcon={<BiUpvote />} onClick={handleUpvote}></Button>
+            {voteCount}
+            <Button variant='ghost' leftIcon={<BiDownvote />} onClick={handleDownvote}></Button>
           </Flex>
-        </CardHeader>
-        <CardBody>
-          <Text>
-            {text}
-          </Text>
-        </CardBody>
-        {/* TODO: Upload image from device feature */}
-        <CardFooter justify='space-between' display='flex'>
-          <Button flex='1' variant='ghost' leftIcon={<BiUpvote />} onClick={handleUpvote}></Button>
-          {voteCount}
-          <Button flex='1' variant='ghost' leftIcon={<BiDownvote />} onClick={handleDownvote}></Button>
-          <Link to={`/posts/${postId}`}>
-          <Button flex='1' variant='ghost' leftIcon={<RxChatBubble />}></Button>
-          </Link>
-          <Button flex='1' variant='ghost' leftIcon={<RxShare2 />}></Button>
-        </CardFooter>
-      </Card>
-  )
+        </Box>
+        <Box flexBasis='80%'>
+          <CardHeader>
+            <Flex gap='4'>
+              <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
+                <Box>
+                  <Heading size='lg'>{title}</Heading>
+                  <Text fontSize='sm'>{originalPoster}</Text>
+                </Box>
+              </Flex>
+              <IconButton
+                variant='ghost'
+                colorScheme='gray'
+                aria-label='See menu'
+                icon={<BsThreeDotsVertical />}
+              />
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Link to={`/posts/${postId}`}>
+              <Text >
+                {text}
+              </Text>
+            </Link>
+          </CardBody>
+          {/* TODO: Upload image from device feature */}
+          <CardFooter justify='space-between' display='flex'>
+            <Link to={`/posts/${postId}`}>
+              <Button variant='ghost' leftIcon={<RxChatBubble />}></Button>
+            </Link>
+            <Button variant='ghost' leftIcon={<RxShare2 />}></Button>
+          </CardFooter>
+        </Box>
+      </Flex>
+    </Card>
+  );  
 }
