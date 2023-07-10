@@ -10,7 +10,7 @@ import { Card,
          Image,
          Button } from '@chakra-ui/react'
 import { BsThreeDotsVertical  } from "react-icons/bs";
-import { BiUpvote,BiDownvote } from "react-icons/bi";
+import { BiUpvote,BiDownvote, BiChat, BiShare } from "react-icons/bi";
 import { RxChatBubble, RxShare2 } from "react-icons/rx";
 import { useDispatch } from 'react-redux';
 import { PostType } from '../types/PostType';
@@ -81,9 +81,9 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
           {/* TODO: Upload image from device feature */}
           <CardFooter justify='space-between' display='flex'>
             <Link to={`/posts/${postId}`}>
-              <Button variant='ghost' leftIcon={<RxChatBubble />}></Button>
+              <Button variant='ghost' leftIcon={<BiChat />}></Button>
             </Link>
-            <Button variant='ghost' leftIcon={<RxShare2 />}></Button>
+            <Button variant='ghost' leftIcon={<BiShare />}></Button>
           </CardFooter>
         </Box>
       </Flex>
