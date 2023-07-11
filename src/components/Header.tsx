@@ -1,8 +1,9 @@
 import { Input, Button, Text } from '@chakra-ui/react'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useSelector } from 'react-redux';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 export function Header() {
     const topBarStyle = {
@@ -20,7 +21,7 @@ export function Header() {
         fontSize: "40px"
       };
     const navigate = useNavigate();
-    const user = auth.currentUser;
+    const [user, setUser] = useState<User | null>(null);
     const handleLoginClick = () => {
       navigate('/login');
     };
@@ -31,6 +32,23 @@ export function Header() {
     const handleHome = () => {
         navigate('/')
     }
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in
+          setUser(user);
+        } else {
+          // User is signed out
+          setUser(null);
+        }
+      });
+
+      return () => {
+        // Unsubscribe the listener when the component unmounts
+        unsubscribe();
+      };
+    }, []);
+    
     return (
         <div className="topBar" style={topBarStyle}>
             <Text style={textStyle} onClick={handleHome}>Un(i)Veil</Text>
