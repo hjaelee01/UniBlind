@@ -1,3 +1,3 @@
 import { PostType } from "./PostType";
 
-export type FeedType = {feed: PostType[]}
+export type FeedType = PostType[];
