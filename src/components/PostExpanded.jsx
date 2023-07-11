@@ -7,13 +7,14 @@ import { FeedType } from "../types/FeedType";
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { BiBookmark, BiChat, BiShare } from "react-icons/bi";
-import { addDoc, collection, doc, getDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query } from "firebase/firestore";
+import { Comment } from "./Comment";
 
 export function PostExpanded() {
-  // TODO: Fetch all comments for this post from Firebase
   const postId = useParams().postId;
-  const [comment, setComment] = React.useState("");
+  const [comment, setComment] = useState('');
   const poster = auth.currentUser.displayName;
+  const [commentComponents, setCommentComponents] = useState([]);
   const [targetPost, setTargetPost] = useState(null);
   const docRef = doc(db, "posts", postId);
   const colRef = collection(docRef, "comments")
@@ -23,13 +24,16 @@ export function PostExpanded() {
       comment: comment,
       poster: poster
     }
-    // TODO: Dispatch action to add comment to Redux
-
-    // TODO: Add comment to Firebase
+    // Add comment to Firebase
     await addDoc(colRef, commentData)
+
+    setComment('');
+    // TODO: Instantly show comment using Redux
+    
   }
 
   useEffect(() => {
+    // Fetch the post data from Firebase
     const fetchPostData = async () => {
       const docRef = doc(db, "posts", postId);
       const docSnap = await getDoc(docRef);
@@ -41,7 +45,24 @@ export function PostExpanded() {
       }
     };
 
+    // TODO: Fetch all comments for this post from Firebase
+    const fetchCommentData = async () => {
+      const querySnapshot = await getDocs(collection(docRef, "comments"));
+      const comments = querySnapshot.docs.map((doc) => {
+        const commentData = doc.data();
+        return (
+          <Comment
+            key={doc.id}
+            comment={commentData.comment}
+            poster={commentData.poster}
+          />
+        );
+      });
+      setCommentComponents(comments);
+    };
+
     fetchPostData();
+    fetchCommentData();
   }, [postId]);
 
   // Render the page only if targetPost exists
@@ -66,6 +87,7 @@ export function PostExpanded() {
       </GridItem>
       <GridItem pl='2' bg="gray.100" area={'main'}>
         <Container padding='4' bg='white' border='2px solid' mt='24'>
+          {/* Original Post Content */}
           <Heading>{targetPost.title}</Heading>
           <Text>Posted by {targetPost.originalPoster}</Text>
           <p>{targetPost.text}</p>
@@ -89,21 +111,29 @@ export function PostExpanded() {
               icon={<BiShare />}
             />
           </Flex>
+
+          {/* Comment Section */}
           <Flex mt='4' flexDirection='column'>
-          <Textarea value={comment} 
-          placeholder='What are your thoughts?'
-          onChange={(e) => setComment(e.target.value)}
-          />
-          <Button
-            rounded='full'
-            colorScheme='teal'
-            mt='2'
-            width={'15%'}
-            onClick={handleCommentClick}
-          >
-            Comment
-          </Button>
-        </Flex>
+            <Textarea value={comment} 
+            placeholder='What are your thoughts?'
+            onChange={(e) => setComment(e.target.value)}
+            />
+            <Button
+              rounded='full'
+              colorScheme='teal'
+              mt='2'
+              width={'15%'}
+              onClick={handleCommentClick}
+            >
+              Comment
+            </Button>
+          </Flex>
+
+          {/* List of comments */}
+          <Grid templateColumns="1fr" gap={4}>
+            {/* TODO: Map docs in query snapshot to Comment component */}
+            {commentComponents}
+          </Grid>
         </Container>
       </GridItem>
     </Grid>
