@@ -4,19 +4,17 @@ import { Navigation } from "./Navigation";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FeedType } from "../types/FeedType";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { BiBookmark, BiChat, BiShare } from "react-icons/bi";
-import { addDoc, collection, doc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 
 export function PostExpanded() {
   // TODO: Fetch all comments for this post from Firebase
   const postId = useParams().postId;
   const [comment, setComment] = React.useState("");
   const poster = auth.currentUser.displayName;
-  const targetPost = useSelector((state) =>
-    state.feed.find(post => post.postId === postId)
-  )
+  const [targetPost, setTargetPost] = useState(null);
   const docRef = doc(db, "posts", postId);
   const colRef = collection(docRef, "comments")
 
@@ -30,6 +28,21 @@ export function PostExpanded() {
     // TODO: Add comment to Firebase
     await addDoc(colRef, commentData)
   }
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      const docRef = doc(db, "posts", postId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setTargetPost(docSnap.data());
+      } else {
+        console.log("No such document!");
+      }
+    };
+
+    fetchPostData();
+  }, [postId]);
 
   // Render the page only if targetPost exists
   if (!targetPost) {
