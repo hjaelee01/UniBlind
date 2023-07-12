@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from 'react-router-dom';
+import { db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const initialState = {
     displayName: '',
@@ -45,7 +47,7 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
         .then(() => {
             return new Promise((resolve, reject) => {
               setTimeout(() => {
-                auth.currentUser.reload().then(() => {
+                auth.currentUser.reload().then(async () => {
                     const user = auth.currentUser;
                     if (user.emailVerified) {
                       // updateProfile(user, {
@@ -54,6 +56,7 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
                       dispatch(login([displayName, user.uid]));
                       resolve(user);
                       alert('Email verification succeeded.');
+                      await setDoc(doc(db, "users", displayName), {});
                       navigate('/');
                     } else {
                       alert('Email verification failed.');
