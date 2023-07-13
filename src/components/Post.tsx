@@ -11,7 +11,6 @@ import { Card,
          Button } from '@chakra-ui/react'
 import { BsThreeDotsVertical  } from "react-icons/bs";
 import { BiUpvote,BiDownvote, BiChat, BiShare } from "react-icons/bi";
-import { RxChatBubble, RxShare2 } from "react-icons/rx";
 import { useDispatch } from 'react-redux';
 import { PostType } from '../types/PostType';
 import { downvote, upvote } from '../redux/feedSlice';

@@ -1,9 +1,10 @@
-import { Input, Button, Text } from '@chakra-ui/react'
+import { Input, Button, Text, MenuButton, Menu, IconButton, MenuList, MenuItem } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useSelector } from 'react-redux';
-import { User, onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged, signOut } from 'firebase/auth';
+import { BiLogOut } from 'react-icons/bi';
 
 export function Header() {
     const topBarStyle = {
@@ -49,6 +50,18 @@ export function Header() {
       };
     }, []);
     
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        alert('Signed out successfully!');
+        navigate('/');
+      })
+      .catch((error) => {
+        alert('Sign out failed!');
+      });
+  };
+
     return (
         <div className="topBar" style={topBarStyle}>
             <Text style={textStyle} onClick={handleHome}>Un(i)Veil</Text>
@@ -59,9 +72,33 @@ export function Header() {
             <Button colorScheme='teal' variant='outline' onClick={handleLoginClick}>
                 Login
             </Button> : 
-            <Button colorScheme='teal' variant='outline' onClick={handleDisplayNameClick}>
+            <Menu>
+              <MenuButton
+              as={Button}
+              aria-label='Options'
+              variant='outline'
+              display='flex'
+              justifyContent='center'
+              alignItems='center'
+              >
                 {user.displayName}
-            </Button>}
+              </MenuButton>
+              <MenuList>
+                <MenuItem 
+                command='⌘T'
+                onClick={handleSignOut}
+                >
+                  Sign Out
+                </MenuItem>
+                <MenuItem command='⌘N'>
+                  Settings
+                </MenuItem>
+              </MenuList>
+            </Menu>
+            }
         </div>
     )
 }
+{/* <Button colorScheme='teal' variant='outline' onClick={handleDisplayNameClick}> */}
+                {/* {user.displayName} */}
+            {/* </Button> */}
