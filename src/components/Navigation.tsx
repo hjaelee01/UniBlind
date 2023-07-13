@@ -1,10 +1,11 @@
 import { Button, Divider } from '@chakra-ui/react'
 import { EditIcon } from '@chakra-ui/icons'
-import { CSSProperties } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { NavButton } from './NavButton';
 import { Link, useNavigate } from 'react-router-dom';
 import React from 'react';
 import { auth } from '../firebase';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 export function Navigation() {
     const containerStyle: CSSProperties = {
@@ -15,7 +16,26 @@ export function Navigation() {
         position: 'relative',
       };
     const navigate = useNavigate();
-    const user = auth.currentUser;
+    const [user, setUser] = useState<User | null>(null);
+
+    // Check auth status in every refresh
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in
+          setUser(user);
+        } else {
+          // User is signed out
+          setUser(null);
+        }
+      });
+
+      return () => {
+        // Unsubscribe the listener when the component unmounts
+        unsubscribe();
+      };
+    }, []);
+    
     const handleCreatePost = () => {
       navigate('/create-post');
     };

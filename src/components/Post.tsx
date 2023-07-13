@@ -23,6 +23,7 @@ import { doc, setDoc, updateDoc } from 'firebase/firestore';
 export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
+  // TODO: Make the votecount update in real time
   const handleUpvote = async() => {
     if (user) {
       dispatch(upvote({postId: postId}));
