@@ -9,6 +9,7 @@ import { auth, db } from "../firebase";
 import { BiBookmark, BiChat, BiShare } from "react-icons/bi";
 import { addDoc, collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { Comment } from "./Comment";
+import { nanoid } from "@reduxjs/toolkit";
 
 export function PostExpanded() {
   const postId = useParams().postId;
@@ -26,10 +27,18 @@ export function PostExpanded() {
     }
     // Add comment to Firebase
     await addDoc(colRef, commentData)
+    
+    // Append the new comment to commentComponents state
+    const newComment = (
+      <Comment
+        key={nanoid()}
+        comment={commentData.comment}
+        poster={commentData.poster}
+      />
+    );
+    setCommentComponents(prevState => [...prevState, newComment]);
 
     setComment('');
-    // TODO: Instantly show comment using Redux
-    
   }
 
   useEffect(() => {
@@ -45,7 +54,7 @@ export function PostExpanded() {
       }
     };
 
-    // TODO: Fetch all comments for this post from Firebase
+    // Fetch all comments for this post from Firebase
     const fetchCommentData = async () => {
       const querySnapshot = await getDocs(collection(docRef, "comments"));
       const comments = querySnapshot.docs.map((doc) => {
