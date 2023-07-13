@@ -16,19 +16,22 @@ import { useDispatch } from 'react-redux';
 import { PostType } from '../types/PostType';
 import { downvote, upvote } from '../redux/feedSlice';
 import { Link } from 'react-router-dom';
-import React from 'react';
+import React, { useState } from 'react';
 import { auth, db } from '../firebase';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
+  const [updatedVoteCount, setUpdatedVoteCount] = useState<number>(voteCount);
+
   // TODO: Make the votecount update in real time
   const handleUpvote = async() => {
     if (user) {
       dispatch(upvote({postId: postId}));
+      setUpdatedVoteCount(updatedVoteCount + 1);
       await updateDoc(doc(db, "posts", postId), {
-        voteCount: voteCount + 1
+        voteCount: updatedVoteCount + 1
       });
     } else {
       alert('Sign in to upvote!');
@@ -37,8 +40,9 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
   const handleDownvote = async() => {
     if (user) {
       dispatch(downvote({postId: postId}));
+      setUpdatedVoteCount(updatedVoteCount - 1);
       await updateDoc(doc(db, "posts", postId), {
-        voteCount: voteCount - 1
+        voteCount: updatedVoteCount - 1
       });
     } else {
       alert('Sign in to downvote!');
@@ -51,7 +55,7 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
         <Box flexBasis='20%' pr={1}>
           <Flex flexDirection='column' alignItems='center'>
             <Button variant='ghost' leftIcon={<BiUpvote />} onClick={handleUpvote}></Button>
-            {voteCount}
+            {updatedVoteCount}
             <Button variant='ghost' leftIcon={<BiDownvote />} onClick={handleDownvote}></Button>
           </Flex>
         </Box>
