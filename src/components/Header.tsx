@@ -23,16 +23,14 @@ export function Header() {
       };
     const navigate = useNavigate();
     const [user, setUser] = useState<User | null>(null);
+    
     const handleLoginClick = () => {
       navigate('/login');
-    };
-    const handleDisplayNameClick = () => {
-        // TODO: add a dropdown menu for user to (view profile / logout / change password)
-        alert('sdklfjwlkjkl')
     };
     const handleHome = () => {
         navigate('/')
     }
+
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {

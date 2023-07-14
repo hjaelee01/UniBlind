@@ -1,13 +1,12 @@
 import { Box, Button, Container, Flex, Grid, GridItem, Heading, IconButton, Text, Textarea } from "@chakra-ui/react";
 import { Header } from "./Header";
 import { Navigation } from "./Navigation";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FeedType } from "../types/FeedType";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
-import { BiBookmark, BiChat, BiShare } from "react-icons/bi";
-import { addDoc, collection, doc, getDoc, getDocs, query } from "firebase/firestore";
+import { BiBookmark, BiChat, BiShare, BiUpvote, BiDownvote } from "react-icons/bi";
+import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { Comment } from "./Comment";
 import { nanoid } from "@reduxjs/toolkit";
 
@@ -18,7 +17,8 @@ export function PostExpanded() {
   const [commentComponents, setCommentComponents] = useState([]);
   const [targetPost, setTargetPost] = useState(null);
   const docRef = doc(db, "posts", postId);
-  const colRef = collection(docRef, "comments")
+  const colRef = collection(docRef, "comments");
+  const [voteCount, setVoteCount] = useState();
 
   const handleCommentClick = async() => {
     const commentData = {
@@ -27,7 +27,6 @@ export function PostExpanded() {
     }
     // Add comment to Firebase
     await addDoc(colRef, commentData)
-    
     // Append the new comment to commentComponents state
     const newComment = (
       <Comment
@@ -37,7 +36,6 @@ export function PostExpanded() {
       />
     );
     setCommentComponents(prevState => [...prevState, newComment]);
-
     setComment('');
   }
 
@@ -49,6 +47,7 @@ export function PostExpanded() {
 
       if (docSnap.exists()) {
         setTargetPost(docSnap.data());
+        setVoteCount(docSnap.data().voteCount);
       } else {
         console.log("No such document!");
       }
@@ -73,6 +72,19 @@ export function PostExpanded() {
     fetchPostData();
     fetchCommentData();
   }, [postId]);
+
+  const handleUpvote = async() => {
+    setVoteCount(prevState => prevState + 1);
+    await updateDoc(docRef, {
+      voteCount: voteCount + 1
+    })
+  }
+  const handleDownvote = async() => {
+    setVoteCount(prevState => prevState - 1);
+    await updateDoc(docRef, {
+      voteCount: voteCount - 1
+    })
+  }
 
   // Render the page only if targetPost exists
   if (!targetPost) {
@@ -101,6 +113,21 @@ export function PostExpanded() {
           <Text>Posted by {targetPost.originalPoster}</Text>
           <p>{targetPost.text}</p>
           <Flex justify='space-between' mt='4'>
+            <IconButton
+              variant='ghost'
+              colorScheme='gray'
+              aria-label='Reply'
+              icon={<BiUpvote />}
+              onClick={handleUpvote}
+            />
+            {voteCount}
+            <IconButton
+              variant='ghost'
+              colorScheme='gray'
+              aria-label='Reply'
+              icon={<BiDownvote />}
+              onClick={handleDownvote}
+            />
             <IconButton
               variant='ghost'
               colorScheme='gray'
