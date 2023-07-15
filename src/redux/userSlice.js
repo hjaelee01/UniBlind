@@ -56,7 +56,10 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
                       dispatch(login([displayName, user.uid]));
                       resolve(user);
                       alert('Email verification succeeded.');
-                      await setDoc(doc(db, "users", displayName), {});
+                      await setDoc(doc(db, "users", displayName), {
+                        upvotedPosts: [],
+                        downvotedPosts: [],
+                      });
                       navigate('/');
                     } else {
                       alert('Email verification failed.');

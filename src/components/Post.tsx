@@ -15,23 +15,74 @@ import { useDispatch } from 'react-redux';
 import { PostType } from '../types/PostType';
 import { downvote, upvote } from '../redux/feedSlice';
 import { Link } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
+  const displayName = user?.displayName!;
   const [updatedVoteCount, setUpdatedVoteCount] = useState<number>(voteCount);
+  const VoteStatus = {
+    UPVOTED: 'upvoted',
+    DOWNVOTED: 'downvoted',
+    NONE: 'none'
+  };
 
-  // TODO: Make the votecount update in real time
+  // Check if user has voted
+  const [voteStatus, setVoteStatus] = useState<string>(VoteStatus.NONE);
+  useEffect(() => {
+    if (user) {
+      const checkVoteStatus = async() => {
+        const docRef = doc(db, "users", displayName);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data?.upvotedPosts.includes(postId)) {
+            setVoteStatus(VoteStatus.UPVOTED);
+          } else if (data?.downvotedPosts.includes(postId)) {
+            setVoteStatus(VoteStatus.DOWNVOTED);
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }
+      checkVoteStatus();
+    }
+  }, [user, postId]);
+
+  // Making the votecount update in real time
   const handleUpvote = async() => {
     if (user) {
+      const docRef = doc(db, "users", displayName);
       dispatch(upvote({postId: postId}));
       setUpdatedVoteCount(updatedVoteCount + 1);
       await updateDoc(doc(db, "posts", postId), {
         voteCount: updatedVoteCount + 1
       });
+      switch (voteStatus) {
+        case VoteStatus.UPVOTED:
+          await updateDoc(docRef, {
+            upvotedPosts: arrayRemove(postId)
+          })
+          setVoteStatus(VoteStatus.NONE);
+          break;
+        case VoteStatus.DOWNVOTED:
+          await updateDoc(docRef, {
+            upvotedPosts: arrayUnion(postId),
+            downvotedPosts: arrayRemove(postId)
+          });
+          setVoteStatus(VoteStatus.UPVOTED);
+          break;
+        case VoteStatus.NONE:
+          await updateDoc(docRef, {
+            upvotedPosts: arrayUnion(postId)
+          });
+          setVoteStatus(VoteStatus.UPVOTED);
+          break;
+      }
     } else {
       alert('Sign in to upvote!');
     }
