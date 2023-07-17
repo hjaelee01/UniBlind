@@ -10,7 +10,7 @@ import { Card,
          Image,
          Button } from '@chakra-ui/react'
 import { BsThreeDotsVertical  } from "react-icons/bs";
-import { BiUpvote,BiDownvote, BiChat, BiShare } from "react-icons/bi";
+import { BiUpvote,BiDownvote, BiChat, BiShare, BiSolidUpvote, BiSolidDownvote } from "react-icons/bi";
 import { useDispatch } from 'react-redux';
 import { PostType } from '../types/PostType';
 import { downvote, upvote } from '../redux/feedSlice';
@@ -21,16 +21,32 @@ import { arrayRemove, arrayUnion, deleteDoc, doc, getDoc, setDoc, updateDoc } fr
 import { useVote } from '../utils/voteUtils';
 
 export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
-  const { updatedVoteCount, handleUpvote, handleDownvote } = useVote(postId, voteCount);
+  const { updatedVoteCount, handleUpvote, handleDownvote, voteStatus } = useVote(postId, voteCount);
+  const [upvoteIcon, setUpvoteIcon] = useState(voteStatus === 'upvoted' ? <BiUpvote /> : <BiUpvote />);
+  const [downvoteIcon, setDownvoteIcon] = useState(voteStatus === 'downvoted' ? <BiDownvote /> : <BiDownvote />);
+  
+  // Fill/Unfill the icons based on the vote status
+  useEffect(() => {
+    if (voteStatus === 'upvoted') {
+      setUpvoteIcon(<BiSolidUpvote />);
+      setDownvoteIcon(<BiDownvote />);
+    } else if (voteStatus === 'downvoted') {
+      setUpvoteIcon(<BiUpvote />);
+      setDownvoteIcon(<BiSolidDownvote />);
+    } else {
+      setUpvoteIcon(<BiUpvote />);
+      setDownvoteIcon(<BiDownvote />);
+    }
+  }, [voteStatus]);
 
   return (
     <Card maxW='md' marginBottom={'20px'} width={'40vw'}>
       <Flex gap='4' flexDirection='row'>
         <Box flexBasis='20%' pr={1}>
           <Flex flexDirection='column' alignItems='center'>
-            <Button variant='ghost' leftIcon={<BiUpvote />} onClick={handleUpvote}></Button>
+            <Button variant='ghost' leftIcon={upvoteIcon} onClick={handleUpvote}></Button>
             {updatedVoteCount}
-            <Button variant='ghost' leftIcon={<BiDownvote />} onClick={handleDownvote}></Button>
+            <Button variant='ghost' leftIcon={downvoteIcon} onClick={handleDownvote}></Button>
           </Flex>
         </Box>
         <Box flexBasis='80%'>

@@ -123,6 +123,7 @@ export function useVote(postId: string, voteCount: number) {
   return {
     updatedVoteCount,
     handleUpvote,
-    handleDownvote
+    handleDownvote,
+    voteStatus
   };
 }
