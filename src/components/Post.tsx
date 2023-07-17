@@ -8,9 +8,18 @@ import { Card,
          Text,
          IconButton,
          Image,
-         Button } from '@chakra-ui/react'
+         Button, 
+         Popover,
+         PopoverTrigger,
+         Portal,
+         PopoverContent,
+         PopoverArrow,
+         PopoverCloseButton,
+         PopoverBody,
+         Icon,
+        } from '@chakra-ui/react'
 import { BsThreeDotsVertical  } from "react-icons/bs";
-import { BiUpvote,BiDownvote, BiChat, BiShare, BiSolidUpvote, BiSolidDownvote } from "react-icons/bi";
+import { BiUpvote,BiDownvote, BiChat, BiShare, BiSolidUpvote, BiSolidDownvote, BiLink } from "react-icons/bi";
 import { useDispatch } from 'react-redux';
 import { PostType } from '../types/PostType';
 import { downvote, upvote } from '../redux/feedSlice';
@@ -19,11 +28,21 @@ import React, { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { arrayRemove, arrayUnion, deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { useVote } from '../utils/voteUtils';
+import '../styles/Post.css'
 
 export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
   const { updatedVoteCount, handleUpvote, handleDownvote, voteStatus } = useVote(postId, voteCount);
   const [upvoteIcon, setUpvoteIcon] = useState(voteStatus === 'upvoted' ? <BiUpvote /> : <BiUpvote />);
   const [downvoteIcon, setDownvoteIcon] = useState(voteStatus === 'downvoted' ? <BiDownvote /> : <BiDownvote />);
+  const [showLinkCopied, setShowLinkCopied] = useState(false);
+
+  const handleButtonClick = () => {
+    navigator.clipboard.writeText(`${window.location.href}posts/${postId}`);
+    setShowLinkCopied(true);
+    setTimeout(() => {
+      setShowLinkCopied(false);
+    }, 3000);
+  };
   
   // Fill/Unfill the icons based on the vote status
   useEffect(() => {
@@ -78,7 +97,34 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
             <Link to={`/posts/${postId}`}>
               <Button variant='ghost' leftIcon={<BiChat />}></Button>
             </Link>
-            <Button variant='ghost' leftIcon={<BiShare />}></Button>
+            <Popover>
+              <PopoverTrigger>
+                <Button variant='ghost' leftIcon={<BiShare />}></Button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Flex justifyContent="center">
+                      <div className="container">
+                        <Button colorScheme="teal" onClick={handleButtonClick}>
+                          Copy Link
+                        </Button>
+                        {showLinkCopied && (
+                          <div className="linkCopied">
+                            <span>
+                              <Icon as={BiLink} />
+                              Link copied
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </Flex>
+                  </PopoverBody>
+                </PopoverContent>
+              </Portal>
+            </Popover>
           </CardFooter>
         </Box>
       </Flex>

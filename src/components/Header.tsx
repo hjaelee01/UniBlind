@@ -97,6 +97,3 @@ export function Header() {
         </div>
     )
 }
-{/* <Button colorScheme='teal' variant='outline' onClick={handleDisplayNameClick}> */}
-                {/* {user.displayName} */}
-            {/* </Button> */}
