@@ -13,12 +13,30 @@ import { nanoid } from "@reduxjs/toolkit";
 export function PostExpanded() {
   const postId = useParams().postId;
   const [comment, setComment] = useState('');
-  const poster = auth.currentUser.displayName;
+  const [user, setUser] = useState(null);
+  const [poster, setPoster] = useState('');
   const [commentComponents, setCommentComponents] = useState([]);
   const [targetPost, setTargetPost] = useState(null);
   const docRef = doc(db, "posts", postId);
   const colRef = collection(docRef, "comments");
   const [voteCount, setVoteCount] = useState();
+
+  // Listen for changes in the authentication state
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+        setPoster(user.displayName);
+      } else {
+        setUser(null);
+        setPoster('');
+      }
+    });
+    
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const handleCommentClick = async() => {
     const commentData = {
@@ -52,7 +70,6 @@ export function PostExpanded() {
         console.log("No such document!");
       }
     };
-
     // Fetch all comments for this post from Firebase
     const fetchCommentData = async () => {
       const querySnapshot = await getDocs(collection(docRef, "comments"));
@@ -68,7 +85,7 @@ export function PostExpanded() {
       });
       setCommentComponents(comments);
     };
-
+    
     fetchPostData();
     fetchCommentData();
   }, [postId]);
