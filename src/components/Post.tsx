@@ -58,27 +58,41 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
     if (user) {
       const docRef = doc(db, "users", displayName);
       dispatch(upvote({postId: postId}));
-      setUpdatedVoteCount(updatedVoteCount + 1);
-      await updateDoc(doc(db, "posts", postId), {
-        voteCount: updatedVoteCount + 1
-      });
       switch (voteStatus) {
         case VoteStatus.UPVOTED:
+          // Update user's upvotedPosts array in database
           await updateDoc(docRef, {
             upvotedPosts: arrayRemove(postId)
-          })
+          });
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(updatedVoteCount - 1);
+          await updateDoc(doc(db, "posts", postId), {
+            voteCount: updatedVoteCount - 1
+          });
           setVoteStatus(VoteStatus.NONE);
           break;
         case VoteStatus.DOWNVOTED:
+          // Update user's upvotedPosts & downvotedPosts array in database
           await updateDoc(docRef, {
             upvotedPosts: arrayUnion(postId),
             downvotedPosts: arrayRemove(postId)
           });
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(updatedVoteCount + 2);
+          await updateDoc(doc(db, "posts", postId), {
+            voteCount: updatedVoteCount + 2
+          });
           setVoteStatus(VoteStatus.UPVOTED);
           break;
         case VoteStatus.NONE:
+          // Update user's upvotedPosts array in database
           await updateDoc(docRef, {
             upvotedPosts: arrayUnion(postId)
+          });
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(updatedVoteCount + 1);
+          await updateDoc(doc(db, "posts", postId), {
+            voteCount: updatedVoteCount + 1
           });
           setVoteStatus(VoteStatus.UPVOTED);
           break;
@@ -89,11 +103,47 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
   }
   const handleDownvote = async() => {
     if (user) {
+      const docRef = doc(db, "users", displayName);
       dispatch(downvote({postId: postId}));
-      setUpdatedVoteCount(updatedVoteCount - 1);
-      await updateDoc(doc(db, "posts", postId), {
-        voteCount: updatedVoteCount - 1
-      });
+      switch (voteStatus) {
+        case VoteStatus.UPVOTED:
+          // Update user's upvotedPosts & downvotedPosts array in database
+          await updateDoc(docRef, {
+            upvotedPosts: arrayRemove(postId),
+            downvotedPosts: arrayUnion(postId)
+          });
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(updatedVoteCount - 2);
+          await updateDoc(doc(db, "posts", postId), {
+            voteCount: updatedVoteCount - 2
+          });
+          setVoteStatus(VoteStatus.DOWNVOTED);
+          break;
+        case VoteStatus.DOWNVOTED:
+          // Update user's downvotedPosts array in database
+          await updateDoc(docRef, {
+            downvotedPosts: arrayRemove(postId)
+          });
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(updatedVoteCount + 1);
+          await updateDoc(doc(db, "posts", postId), {
+            voteCount: updatedVoteCount + 1
+          });
+          setVoteStatus(VoteStatus.NONE);
+          break;
+        case VoteStatus.NONE:
+          // Update user's downvotedPosts array in database
+          await updateDoc(docRef, {
+            downvotedPosts: arrayUnion(postId)
+          });
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(updatedVoteCount - 1);
+          await updateDoc(doc(db, "posts", postId), {
+            voteCount: updatedVoteCount - 1
+          });
+          setVoteStatus(VoteStatus.DOWNVOTED);
+          break;
+      }
     } else {
       alert('Sign in to downvote!');
     }
