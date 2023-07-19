@@ -5,11 +5,12 @@ import { useParams } from "react-router-dom";
 import { FeedType } from "../types/FeedType";
 import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
-import { BiBookmark, BiChat, BiShare, BiUpvote, BiDownvote } from "react-icons/bi";
+import { BiBookmark, BiChat, BiShare, BiUpvote, BiDownvote, BiSolidUpvote, BiSolidDownvote } from "react-icons/bi";
 import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { Comment } from "./Comment";
 import { nanoid } from "@reduxjs/toolkit";
 import SharePost from "../utils/sharePost";
+import { useVote } from "../utils/useVote";
 
 export function PostExpanded() {
   const postId = useParams().postId;
@@ -20,7 +21,9 @@ export function PostExpanded() {
   const [targetPost, setTargetPost] = useState(null);
   const docRef = doc(db, "posts", postId);
   const colRef = collection(docRef, "comments");
-  const [voteCount, setVoteCount] = useState();
+  const { updatedVoteCount, handleUpvote, handleDownvote, voteStatus } = useVote(postId);
+  const [upvoteIcon, setUpvoteIcon] = useState(voteStatus === 'upvoted' ? <BiUpvote /> : <BiUpvote />);
+  const [downvoteIcon, setDownvoteIcon] = useState(voteStatus === 'downvoted' ? <BiDownvote /> : <BiDownvote />);
 
   // Listen for changes in the authentication state
   useEffect(() => {
@@ -38,6 +41,19 @@ export function PostExpanded() {
       unsubscribe();
     };
   }, []);
+  // Fill/Unfill the icons based on the vote status
+  useEffect(() => {
+    if (voteStatus === 'upvoted') {
+      setUpvoteIcon(<BiSolidUpvote />);
+      setDownvoteIcon(<BiDownvote />);
+    } else if (voteStatus === 'downvoted') {
+      setUpvoteIcon(<BiUpvote />);
+      setDownvoteIcon(<BiSolidDownvote />);
+    } else {
+      setUpvoteIcon(<BiUpvote />);
+      setDownvoteIcon(<BiDownvote />);
+    }
+  }, [voteStatus]);
 
   const handleCommentClick = async() => {
     const commentData = {
@@ -66,7 +82,6 @@ export function PostExpanded() {
 
       if (docSnap.exists()) {
         setTargetPost(docSnap.data());
-        setVoteCount(docSnap.data().voteCount);
       } else {
         console.log("No such document!");
       }
@@ -90,19 +105,6 @@ export function PostExpanded() {
     fetchPostData();
     fetchCommentData();
   }, [postId]);
-
-  const handleUpvote = async() => {
-    setVoteCount(prevState => prevState + 1);
-    await updateDoc(docRef, {
-      voteCount: voteCount + 1
-    })
-  }
-  const handleDownvote = async() => {
-    setVoteCount(prevState => prevState - 1);
-    await updateDoc(docRef, {
-      voteCount: voteCount - 1
-    })
-  }
 
   // Render the page only if targetPost exists
   if (!targetPost) {
@@ -135,15 +137,15 @@ export function PostExpanded() {
               variant='ghost'
               colorScheme='gray'
               aria-label='Reply'
-              icon={<BiUpvote />}
+              icon={upvoteIcon}
               onClick={handleUpvote}
             />
-            {voteCount}
+            {updatedVoteCount}
             <IconButton
               variant='ghost'
               colorScheme='gray'
               aria-label='Reply'
-              icon={<BiDownvote />}
+              icon={downvoteIcon}
               onClick={handleDownvote}
             />
             <IconButton

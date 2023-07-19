@@ -4,21 +4,34 @@ import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firest
 import { upvote, downvote } from '../redux/feedSlice';
 import { auth, db } from '../firebase';
 
-export function useVote(postId: string, voteCount: number) {
+export const VoteStatus = {
+  UPVOTED: 'upvoted',
+  DOWNVOTED: 'downvoted',
+  NONE: 'none',
+};
+
+export function useVote(postId: string) {
   const dispatch = useDispatch();
+  const [updatedVoteCount, setUpdatedVoteCount] = useState(0);
+  const [voteStatus, setVoteStatus] = useState(VoteStatus.NONE);
   const user = auth.currentUser;
   const displayName = user?.displayName!;
-  const [updatedVoteCount, setUpdatedVoteCount] = useState<number>(voteCount);
-  const VoteStatus = {
-    UPVOTED: 'upvoted',
-    DOWNVOTED: 'downvoted',
-    NONE: 'none'
-  };
 
-  const [voteStatus, setVoteStatus] = useState<string>(VoteStatus.NONE);
   useEffect(() => {
-    if (user) {
-      const checkVoteStatus = async () => {
+    const fetchVoteCount = async () => {
+      const docRef = doc(db, 'posts', postId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUpdatedVoteCount(data.voteCount);
+      } else {
+        console.log('No such document!');
+      }
+    };
+
+    const checkVoteStatus = async () => {
+      if (user) {
         const docRef = doc(db, 'users', displayName);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -31,44 +44,52 @@ export function useVote(postId: string, voteCount: number) {
         } else {
           console.log('No such document!');
         }
-      };
-      checkVoteStatus();
-    }
-  }, [user, postId]);
+      }
+    };
+
+    fetchVoteCount();
+    checkVoteStatus();
+  }, [postId, user]);
 
   const handleUpvote = async () => {
     if (user) {
       const docRef = doc(db, 'users', displayName);
-      dispatch(upvote({ postId: postId }));
+      dispatch(upvote({ postId }));
       switch (voteStatus) {
         case VoteStatus.UPVOTED:
+          // Update user's upvotedPosts array in database
           await updateDoc(docRef, {
-            upvotedPosts: arrayRemove(postId)
+            upvotedPosts: arrayRemove(postId),
           });
-          setUpdatedVoteCount(updatedVoteCount - 1);
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(prevCount => prevCount - 1);
           await updateDoc(doc(db, 'posts', postId), {
-            voteCount: updatedVoteCount - 1
+            voteCount: updatedVoteCount - 1,
           });
           setVoteStatus(VoteStatus.NONE);
           break;
         case VoteStatus.DOWNVOTED:
+          // Update user's upvotedPosts & downvotedPosts array in database
           await updateDoc(docRef, {
             upvotedPosts: arrayUnion(postId),
-            downvotedPosts: arrayRemove(postId)
+            downvotedPosts: arrayRemove(postId),
           });
-          setUpdatedVoteCount(updatedVoteCount + 2);
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(prevCount => prevCount + 2);
           await updateDoc(doc(db, 'posts', postId), {
-            voteCount: updatedVoteCount + 2
+            voteCount: updatedVoteCount + 2,
           });
           setVoteStatus(VoteStatus.UPVOTED);
           break;
         case VoteStatus.NONE:
+          // Update user's upvotedPosts array in database
           await updateDoc(docRef, {
-            upvotedPosts: arrayUnion(postId)
+            upvotedPosts: arrayUnion(postId),
           });
-          setUpdatedVoteCount(updatedVoteCount + 1);
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(prevCount => prevCount + 1);
           await updateDoc(doc(db, 'posts', postId), {
-            voteCount: updatedVoteCount + 1
+            voteCount: updatedVoteCount + 1,
           });
           setVoteStatus(VoteStatus.UPVOTED);
           break;
@@ -81,36 +102,42 @@ export function useVote(postId: string, voteCount: number) {
   const handleDownvote = async () => {
     if (user) {
       const docRef = doc(db, 'users', displayName);
-      dispatch(downvote({ postId: postId }));
+      dispatch(downvote({ postId }));
       switch (voteStatus) {
         case VoteStatus.UPVOTED:
+          // Update user's upvotedPosts & downvotedPosts array in database
           await updateDoc(docRef, {
             upvotedPosts: arrayRemove(postId),
-            downvotedPosts: arrayUnion(postId)
+            downvotedPosts: arrayUnion(postId),
           });
-          setUpdatedVoteCount(updatedVoteCount - 2);
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(prevCount => prevCount - 2);
           await updateDoc(doc(db, 'posts', postId), {
-            voteCount: updatedVoteCount - 2
+            voteCount: updatedVoteCount - 2,
           });
           setVoteStatus(VoteStatus.DOWNVOTED);
           break;
         case VoteStatus.DOWNVOTED:
+          // Update user's downvotedPosts array in database
           await updateDoc(docRef, {
-            downvotedPosts: arrayRemove(postId)
+            downvotedPosts: arrayRemove(postId),
           });
-          setUpdatedVoteCount(updatedVoteCount + 1);
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(prevCount => prevCount + 1);
           await updateDoc(doc(db, 'posts', postId), {
-            voteCount: updatedVoteCount + 1
+            voteCount: updatedVoteCount + 1,
           });
           setVoteStatus(VoteStatus.NONE);
           break;
         case VoteStatus.NONE:
+          // Update user's downvotedPosts array in database
           await updateDoc(docRef, {
-            downvotedPosts: arrayUnion(postId)
+            downvotedPosts: arrayUnion(postId),
           });
-          setUpdatedVoteCount(updatedVoteCount - 1);
+          // Update votecount in both UI and database
+          setUpdatedVoteCount(prevCount => prevCount - 1);
           await updateDoc(doc(db, 'posts', postId), {
-            voteCount: updatedVoteCount - 1
+            voteCount: updatedVoteCount - 1,
           });
           setVoteStatus(VoteStatus.DOWNVOTED);
           break;
@@ -122,8 +149,8 @@ export function useVote(postId: string, voteCount: number) {
 
   return {
     updatedVoteCount,
+    voteStatus,
     handleUpvote,
     handleDownvote,
-    voteStatus
   };
 }

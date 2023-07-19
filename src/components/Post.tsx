@@ -7,44 +7,22 @@ import { Card,
          Heading,
          Text,
          IconButton,
-         Image,
          Button, 
-         Popover,
-         PopoverTrigger,
-         Portal,
-         PopoverContent,
-         PopoverArrow,
-         PopoverCloseButton,
-         PopoverBody,
-         Icon,
         } from '@chakra-ui/react'
 import { BsThreeDotsVertical  } from "react-icons/bs";
-import { BiUpvote,BiDownvote, BiChat, BiShare, BiSolidUpvote, BiSolidDownvote, BiLink } from "react-icons/bi";
-import { useDispatch } from 'react-redux';
+import { BiUpvote, BiDownvote, BiChat, BiSolidUpvote, BiSolidDownvote, } from "react-icons/bi";
 import { PostType } from '../types/PostType';
-import { downvote, upvote } from '../redux/feedSlice';
 import { Link } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
-import { auth, db } from '../firebase';
-import { arrayRemove, arrayUnion, deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { useVote } from '../utils/voteUtils';
+import { useEffect, useState } from 'react';
+import { useVote } from '../utils/useVote';
 import '../styles/Post.css'
 import SharePost from '../utils/sharePost';
 
 export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
-  const { updatedVoteCount, handleUpvote, handleDownvote, voteStatus } = useVote(postId, voteCount);
+  const { updatedVoteCount, handleUpvote, handleDownvote, voteStatus } = useVote(postId);
   const [upvoteIcon, setUpvoteIcon] = useState(voteStatus === 'upvoted' ? <BiUpvote /> : <BiUpvote />);
   const [downvoteIcon, setDownvoteIcon] = useState(voteStatus === 'downvoted' ? <BiDownvote /> : <BiDownvote />);
-  const [showLinkCopied, setShowLinkCopied] = useState(false);
 
-  const handleShareClick = () => {
-    navigator.clipboard.writeText(`${window.location.href}posts/${postId}`);
-    setShowLinkCopied(true);
-    setTimeout(() => {
-      setShowLinkCopied(false);
-    }, 3000);
-  };
-  
   // Fill/Unfill the icons based on the vote status
   useEffect(() => {
     if (voteStatus === 'upvoted') {
