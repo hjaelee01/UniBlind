@@ -29,6 +29,7 @@ import { auth, db } from '../firebase';
 import { arrayRemove, arrayUnion, deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { useVote } from '../utils/voteUtils';
 import '../styles/Post.css'
+import SharePost from '../utils/sharePost';
 
 export function Post({originalPoster, postId, title, text, voteCount}: PostType) {
   const { updatedVoteCount, handleUpvote, handleDownvote, voteStatus } = useVote(postId, voteCount);
@@ -36,7 +37,7 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
   const [downvoteIcon, setDownvoteIcon] = useState(voteStatus === 'downvoted' ? <BiDownvote /> : <BiDownvote />);
   const [showLinkCopied, setShowLinkCopied] = useState(false);
 
-  const handleButtonClick = () => {
+  const handleShareClick = () => {
     navigator.clipboard.writeText(`${window.location.href}posts/${postId}`);
     setShowLinkCopied(true);
     setTimeout(() => {
@@ -82,6 +83,7 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
                 colorScheme='gray'
                 aria-label='See menu'
                 icon={<BsThreeDotsVertical />}
+                // TODO: onClick={drop down a 'delete post' option if the user is the original poster}
               />
             </Flex>
           </CardHeader>
@@ -97,34 +99,7 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
             <Link to={`/posts/${postId}`}>
               <Button variant='ghost' leftIcon={<BiChat />}></Button>
             </Link>
-            <Popover>
-              <PopoverTrigger>
-                <Button variant='ghost' leftIcon={<BiShare />}></Button>
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent>
-                  <PopoverArrow />
-                  <PopoverCloseButton />
-                  <PopoverBody>
-                    <Flex justifyContent="center">
-                      <div className="container">
-                        <Button colorScheme="teal" onClick={handleButtonClick}>
-                          Copy Link
-                        </Button>
-                        {showLinkCopied && (
-                          <div className="linkCopied">
-                            <span>
-                              <Icon as={BiLink} />
-                              Link copied
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </Flex>
-                  </PopoverBody>
-                </PopoverContent>
-              </Portal>
-            </Popover>
+            <SharePost postId={postId} />
           </CardFooter>
         </Box>
       </Flex>

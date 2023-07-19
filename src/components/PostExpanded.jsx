@@ -9,6 +9,7 @@ import { BiBookmark, BiChat, BiShare, BiUpvote, BiDownvote } from "react-icons/b
 import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { Comment } from "./Comment";
 import { nanoid } from "@reduxjs/toolkit";
+import SharePost from "../utils/sharePost";
 
 export function PostExpanded() {
   const postId = useParams().postId;
@@ -156,13 +157,9 @@ export function PostExpanded() {
               colorScheme='gray'
               aria-label='Save'
               icon={<BiBookmark />}
+              // TODO: Implement save functionality
             />
-            <IconButton
-              variant='ghost'
-              colorScheme='gray'
-              aria-label='Share'
-              icon={<BiShare />}
-            />
+            <SharePost postId={postId} />
           </Flex>
 
           {/* Comment Section */}
