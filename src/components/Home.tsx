@@ -28,14 +28,13 @@ export function Home() {
         logout();
       }
     });
-    // TODO: If it's logged in, it remains the auth state even when refreshed.
   }, []);
 
   return (
       <Grid
         templateAreas={`"header header"
                         "nav main"`}
-        gridTemplateRows={'100px 1fr'}
+        gridTemplateRows={'1fr 10fr'}
         gridTemplateColumns={'25% 2fr'}
         h='100vh'
         color='blackAlpha.700'

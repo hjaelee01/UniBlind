@@ -153,7 +153,9 @@ export function PostExpanded() {
               colorScheme='gray'
               aria-label='Reply'
               icon={<BiChat />}
-            />
+            >
+              {/* TODO: indicate comment count{targetPost.commentCount} */}
+            </IconButton>
             <IconButton
               variant='ghost'
               colorScheme='gray'

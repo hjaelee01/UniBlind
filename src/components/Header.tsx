@@ -1,25 +1,24 @@
-import { Input, Button, Text, MenuButton, Menu, IconButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { Input, Button, Text, MenuButton, Menu, IconButton, MenuList, MenuItem, InputGroup, InputLeftElement, FormControl, Stack } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useSelector } from 'react-redux';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
-import { BiLogOut } from 'react-icons/bi';
+import { BiCog, BiLogOut, BiSearch } from 'react-icons/bi';
 
 export function Header() {
     const topBarStyle = {
-        padding: '20px',
+        padding: '10px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'
     }
     const searchbarStyle = {
-        padding: '10px',
-        borderRadius: '50px'
-    }
+      borderRadius: '20px',
+    };    
     const textStyle = {
         fontFamily: "'Inter', sans-serif",
-        fontSize: "40px"
+        fontSize: "30px"
       };
     const navigate = useNavigate();
     const [user, setUser] = useState<User | null>(null);
@@ -63,9 +62,16 @@ export function Header() {
     return (
         <div className="topBar" style={topBarStyle}>
             <Text style={textStyle} onClick={handleHome}>Un(i)Veil</Text>
-            <div style={{ width: '30px' }}></div>
-            <Input placeholder='Search' style={searchbarStyle}/>
-            <div style={{ width: '30px' }}></div>
+            <div style={{ width: '200px' }}></div>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<BiSearch />}
+                marginLeft="0.5rem"
+              />
+              <Input type='text' placeholder='Search' style={searchbarStyle}/>
+            </InputGroup>
+            <div style={{ width: '300px' }}></div>
             {!user ?
             <Button colorScheme='teal' variant='outline' onClick={handleLoginClick}>
                 Login
@@ -78,22 +84,25 @@ export function Header() {
               display='flex'
               justifyContent='center'
               alignItems='center'
+              w="175px"
               >
                 {user.displayName}
               </MenuButton>
               <MenuList>
                 <MenuItem 
-                command='⌘T'
+                icon={<BiLogOut />}
                 onClick={handleSignOut}
                 >
                   Sign Out
                 </MenuItem>
-                <MenuItem command='⌘N'>
+                <MenuItem
+                icon={<BiCog />}>
                   Settings
                 </MenuItem>
               </MenuList>
             </Menu>
             }
+            <div style={{ width: '100px' }}></div>
         </div>
     )
 }
