@@ -1,10 +1,11 @@
-import { Input, Button, Text, MenuButton, Menu, IconButton, MenuList, MenuItem, InputGroup, InputLeftElement, FormControl, Stack } from '@chakra-ui/react'
+import { Input, Button, Text, MenuButton, Menu, IconButton, MenuList, MenuItem, InputGroup, InputLeftElement, FormControl, Stack, Icon } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useSelector } from 'react-redux';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
-import { BiCog, BiLogOut, BiSearch } from 'react-icons/bi';
+import { BiCog, BiLogOut, BiSearch, BiSolidUser } from 'react-icons/bi';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 export function Header() {
     const topBarStyle = {
@@ -84,8 +85,10 @@ export function Header() {
               display='flex'
               justifyContent='center'
               alignItems='center'
-              w="175px"
+              w="300px"
+              rightIcon={<ChevronDownIcon />}
               >
+                <Icon as={BiSolidUser} mr={2} />
                 {user.displayName}
               </MenuButton>
               <MenuList>
