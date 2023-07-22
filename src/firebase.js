@@ -26,7 +26,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
-//const analytics = getAnalytics(app);
+// Initialize Analytics and get a reference to the service
+const analytics = getAnalytics(app);
 const auth = getAuth(app);
 connectAuthEmulator(auth, "http://localhost:9099");
 connectFirestoreEmulator(db,'0.0.0.0', 8080)
@@ -34,6 +35,7 @@ export {
   auth,
   db,
   onAuthStateChanged,
+  analytics,
 }
 
 export default app;
