@@ -5,10 +5,10 @@ Welcome to a unique townsquare for [University of Edinburgh](https://en.wikipedi
 What sets this site apart?
 1. **Every member is a verified student.** We verify each member's student email address to ensure that everyone on the site is a current or former student.
 
-    ![Signup](/public/Signup.gif)
+    ![Signup](https://github.com/hjaelee01/UniVeil/blob/main/public/Signup.gif)
 
 2. **It's anonymous**, granting you the freedom to express your candid opinions without holding anything back.
 
-    ![After Signup](/public/After_Signup.gif)
+    ![After Signup](https://github.com/hjaelee01/UniVeil/blob/main/public/After_Signup.gif)
 
 Join us here
