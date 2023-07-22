@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/UniVeil/static/css/main.7616508b.css",
+    "main.js": "/UniVeil/static/js/main.b6c27a61.js",
+    "index.html": "/UniVeil/index.html",
+    "main.7616508b.css.map": "/UniVeil/static/css/main.7616508b.css.map",
+    "main.b6c27a61.js.map": "/UniVeil/static/js/main.b6c27a61.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7616508b.css",
+    "static/js/main.b6c27a61.js"
+  ]
+}
