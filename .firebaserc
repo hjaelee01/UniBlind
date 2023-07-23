@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "unihood-20eb2"
-  }
+  },
+  "targets": {
+    "unihood-20eb2": {
+      "hosting": {
+        "not-tempting-name": [
+          "unihood-20eb2"
+        ],
+        "website": [
+          "univeil"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
