@@ -18,10 +18,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true
   },
   "include": [
     "src"
-, "src/firebase.js"  ],
+, "src/firebase.js",
+"**/*.ts"  ],
   "types": ["redux"]
 }

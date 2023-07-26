@@ -4,7 +4,7 @@
   },
   "hosting": [
     {
-      "public": "build",
+      "public": "public",
       "target": "not-tempting-name",
       "ignore": [
         "firebase.json",
@@ -22,8 +22,8 @@
       ],
       "rewrites": [
         {
-          "source": "**",
-          "destination": "/index.html"
+        "source": "**",
+        "destination": "/public/index.html"
         }
       ]
     }
