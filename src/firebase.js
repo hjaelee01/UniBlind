@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator, initializeFirestore } from 'firebase/firestore';
 import { getAnalytics } from "firebase/analytics";
 import { 
 getAuth,
@@ -15,27 +15,32 @@ connectAuthEmulator,
 const firebaseConfig = {
   apiKey: String(process.env.REACT_APP_FIREBASE_API_KEY),
   authDomain: String(process.env.REACT_APP_FIREBASE_AUTH_DOMAIN),
-  projectId: 'unihood-20eb2',
+  databaseURL: String(process.env.REACT_APP_FIREBASE_DATABASE_URL),
+  projectId: String(process.env.REACT_APP_FIREBASE_PROJECT_ID),
   storageBucket: String(process.env.REACT_APP_FIREBASE_STORAGE_BUCKET),
   messagingSenderId: String(process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID),
   appId: String(process.env.REACT_APP_FIREBASE_APP_ID),
-  measurementId: String(process.env.REACT_APP_FIREBASE_SENDER_ID)
+  measurementId: String(process.env.REACT_APP_FIREBASE_MEASUREMENT_ID)
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  useFetchStreams: false,
+})
 // Initialize Analytics and get a reference to the service
-const analytics = getAnalytics(app);
 const auth = getAuth(app);
-connectAuthEmulator(auth, "http://localhost:9099");
-connectFirestoreEmulator(db,'0.0.0.0', 8080)
+const useEmulators = process.env.REACT_APP_USE_EMULATORS === 'true';
+if (useEmulators) {
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectFirestoreEmulator(db,'0.0.0.0', 8080);
+}
 export {
   auth,
   db,
   onAuthStateChanged,
-  analytics,
 }
 
 export default app;

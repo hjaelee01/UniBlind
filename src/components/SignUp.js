@@ -15,22 +15,14 @@ import {
 import { FaUserAlt, FaLock, FaKey, FaGhost } from "react-icons/fa";
 
 import { useState } from "react";
-import firebase from "firebase/compat/app";
 // Required for side-effects
 import "firebase/firestore";
-import { auth } from "../firebase";
-import {
-  createUserWithEmailAndPassword, 
-  sendEmailVerification,
-  updateProfile,
-} from 'firebase/auth';
 import { signUp } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
-const CFaKey = chakra(FaKey);
 const CFaGhost = chakra(FaGhost);
 
 export function SignUp() {
