@@ -46,6 +46,8 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
         })
         .then(() => {
             return new Promise((resolve, reject) => {
+              // setInterval(() => {setTimeOut(() => {...,5000})}, 180000)
+              // During 3 minutes, check every 5 seconds if the user has verified his email
               setTimeout(() => {
                 auth.currentUser.reload().then(async () => {
                     const user = auth.currentUser;
@@ -66,7 +68,7 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
                       reject(new Error("Email verification failed."));
                     }
                 });
-              }, 10000); // Wait for 10 seconds (10000 milliseconds)
+              }, 30000); // Wait for 30 seconds (30000 milliseconds)
             });
           })
           .catch((error) => {

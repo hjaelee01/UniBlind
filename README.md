@@ -9,8 +9,8 @@ What sets this site apart?
 
 
 
-2. **It's anonymous**, granting you the freedom to express your candid opinions without holding anything back.
+2. **It's completely anonymous.** Our database is designed to ensure complete anonymity, allowing you the freedom to express your candid opinions without any concerns about us tracking your identity.
 
     https://github.com/hjaelee01/UniVeil/assets/102636119/1fc898cd-7fad-44da-8d76-41abbadc47e5
 
-Join us here
+Join us [here](https://univeil.web.app/)

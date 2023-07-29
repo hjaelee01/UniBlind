@@ -37,7 +37,7 @@ export function SignUp() {
   const navigate = useNavigate();
 
   const handleJoinClick = () => {
-    console.log('aaaaaaaaaa')
+    console.log('Join button clicked.')
     if (!email.endsWith("@ed.ac.uk")) {
       setError('Please enter a valid school email address.');
       alert('Please enter a valid school email address.')
