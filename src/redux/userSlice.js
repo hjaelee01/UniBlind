@@ -46,31 +46,40 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
         })
         .then(() => {
             return new Promise((resolve, reject) => {
-              // TODO:
-              // setInterval(() => {setTimeOut(() => {...,5000})}, 180000)
-              // During 3 minutes, check every 5 seconds if the user has verified his email
-              setTimeout(() => {
+              let intervalId; // Store the interval ID
+
+              const handleInterval = () => {
                 auth.currentUser.reload().then(async () => {
-                    const user = auth.currentUser;
-                    if (user.emailVerified) {
-                      // updateProfile(user, {
-                        // displayName: displayName,
-                      // });
-                      dispatch(login([displayName, user.uid]));
-                      resolve(user);
-                      alert('Email verification succeeded.');
-                      await setDoc(doc(db, "users", displayName), {
-                        upvotedPosts: [],
-                        downvotedPosts: [],
-                      });
-                      navigate('/');
-                    } else {
-                      alert('Email verification failed.');
-                      reject(new Error("Email verification failed."));
-                      deleteUser(user);
-                    }
+                  const user = auth.currentUser;
+                  if (user.emailVerified) {
+                    clearInterval(intervalId); // Clear the interval when email is verified
+                    // updateProfile(user, {
+                    //   displayName: displayName,
+                    // });
+                    dispatch(login([displayName, user.uid]));
+                    resolve(user);
+                    alert('Email verification succeeded.');
+                    await setDoc(doc(db, "users", displayName), {
+                      upvotedPosts: [],
+                      downvotedPosts: [],
+                    });
+                    navigate('/');
+                  } else {
+                    alert('Email verification failed.');
+                    if (intervalId) clearInterval(intervalId); // Clear the interval when email verification fails
+                    reject(new Error("Email verification failed."));
+                    deleteUser(user);
+                  }
                 });
-              }, 5000); // Wait for 30 seconds (30000 milliseconds)
+              };
+            
+              intervalId = setInterval(handleInterval, 5000); // Check email verification every 5 seconds
+            
+              // Set a timeout for 3 minutes
+              setTimeout(() => {
+                clearInterval(intervalId); // Clear the interval after 3 minutes
+                reject(new Error("Email verification timed out."));
+              }, 60000);
             });
           })
           .catch((error) => {
