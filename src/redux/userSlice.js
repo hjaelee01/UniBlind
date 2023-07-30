@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 // import { UserType } from "../types/UserType";
-import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from 'react-router-dom';
 import { db } from "../firebase";
@@ -46,6 +46,7 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
         })
         .then(() => {
             return new Promise((resolve, reject) => {
+              // TODO:
               // setInterval(() => {setTimeOut(() => {...,5000})}, 180000)
               // During 3 minutes, check every 5 seconds if the user has verified his email
               setTimeout(() => {
@@ -66,9 +67,10 @@ export const signUp = (email, displayName, password, navigate) => async (dispatc
                     } else {
                       alert('Email verification failed.');
                       reject(new Error("Email verification failed."));
+                      deleteUser(user);
                     }
                 });
-              }, 30000); // Wait for 30 seconds (30000 milliseconds)
+              }, 5000); // Wait for 30 seconds (30000 milliseconds)
             });
           })
           .catch((error) => {
