@@ -29,67 +29,50 @@ export const userSlice = createSlice({
 export const { login, logout } = userSlice.actions;
 
 export const signUp = (email, displayName, password, navigate) => async (dispatch) => {
-    try {
-        createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    updateProfile(auth.currentUser, {
-                      displayName: displayName,
-                    });
-                    sendEmailVerification(auth.currentUser);
-                    alert("Verification email sent. Check your mailbox!")
-                } else {
-                    alert("User doesn't exist")
-                }
-            })
-        })
-        .then(() => {
-            return new Promise((resolve, reject) => {
-              let intervalId; // Store the interval ID
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-              const handleInterval = () => {
-                auth.currentUser.reload().then(async () => {
-                  const user = auth.currentUser;
-                  if (user.emailVerified) {
-                    clearInterval(intervalId); // Clear the interval when email is verified
-                    // updateProfile(user, {
-                    //   displayName: displayName,
-                    // });
-                    dispatch(login([displayName, user.uid]));
-                    resolve(user);
-                    alert('Email verification succeeded.');
-                    await setDoc(doc(db, "users", displayName), {
-                      upvotedPosts: [],
-                      downvotedPosts: [],
-                    });
-                    navigate('/');
-                  } else {
-                    alert('Email verification failed.');
-                    if (intervalId) clearInterval(intervalId); // Clear the interval when email verification fails
-                    reject(new Error("Email verification failed."));
-                    deleteUser(user);
-                  }
-                });
-              };
-            
-              intervalId = setInterval(handleInterval, 5000); // Check email verification every 5 seconds
-            
-              // Set a timeout for 3 minutes
-              setTimeout(() => {
-                clearInterval(intervalId); // Clear the interval after 3 minutes
-                reject(new Error("Email verification timed out."));
-              }, 60000);
-            });
-          })
-          .catch((error) => {
-            alert(error.message);
+    await updateProfile(user, {
+      displayName: displayName,
+    });
+
+    await sendEmailVerification(user);
+
+    alert("Verification email sent. Check your mailbox!");
+
+    return new Promise((resolve, reject) => {
+      let intervalId;
+      let startTime = new Date().getTime();
+
+      const handleInterval = async () => {
+        await user.reload();
+
+        if (user.emailVerified) {
+          clearInterval(intervalId);
+          dispatch(login([displayName, user.uid]));
+          alert("Email verification succeeded.");
+          await setDoc(doc(db, "users", displayName), {
+            upvotedPosts: [],
+            downvotedPosts: [],
           });
-    } catch (error) {
-        console.log(error)
-        alert(error.message)
-    }
-}
+          navigate('/');
+          resolve(user);
+        } else if (new Date().getTime() - startTime >= 180000) {
+          clearInterval(intervalId);
+          reject(new Error("Email verification timed out."));
+          await deleteUser(user);
+          alert("Email verification timed out. Please try again.");
+        }
+      };
+
+      intervalId = setInterval(handleInterval, 5000);
+    });
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
 
 
 export default userSlice.reducer;
