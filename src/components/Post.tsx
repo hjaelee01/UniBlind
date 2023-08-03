@@ -67,7 +67,7 @@ export function Post({originalPoster, postId, title, text, voteCount}: PostType)
           </CardHeader>
           <CardBody>
             <Link to={`/posts/${postId}`}>
-              <Text >
+              <Text fontSize='md' color={'gray'}>
                 {text}
               </Text>
             </Link>

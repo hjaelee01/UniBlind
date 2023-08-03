@@ -74,7 +74,7 @@ export function Header() {
             </InputGroup>
             <div style={{ width: '300px' }}></div>
             {!user ?
-            <Button colorScheme='teal' variant='outline' onClick={handleLoginClick}>
+            <Button width={'300px'} colorScheme='teal' variant='outline' onClick={handleLoginClick} borderRadius={'20px'}>
                 Login
             </Button> : 
             <Menu>
@@ -87,6 +87,7 @@ export function Header() {
               alignItems='center'
               w="300px"
               rightIcon={<ChevronDownIcon />}
+              borderRadius={'20px'}
               >
                 <Icon as={BiSolidUser} mr={2} />
                 {user.displayName}

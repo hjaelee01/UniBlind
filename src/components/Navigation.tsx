@@ -43,10 +43,10 @@ export function Navigation() {
     return (
         <div style={containerStyle}>
             {user ?
-            <Button leftIcon={<EditIcon />} colorScheme="teal" variant="solid" mt={4} onClick={handleCreatePost}>
+            <Button borderRadius={'20px'} leftIcon={<EditIcon />} colorScheme="teal" variant="solid" mt={4} onClick={handleCreatePost}>
                 Create post
             </Button>
-            : <Button leftIcon={<EditIcon />} colorScheme="teal" variant="solid" mt={4} onClick={() => alert('Sign in to write post!')}>
+            : <Button borderRadius={'20px'} leftIcon={<EditIcon />} colorScheme="teal" variant="solid" mt={4} onClick={() => alert('Sign in to write post!')}>
                 Create post
             </Button>}
             <Divider borderWidth='1px' borderColor='gray' my='5' />
